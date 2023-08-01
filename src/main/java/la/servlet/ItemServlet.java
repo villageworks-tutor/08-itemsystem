@@ -38,6 +38,7 @@ public class ItemServlet extends HttpServlet {
 				List<ItemBean> list = dao.findAll();
 				request.setAttribute("items", list);
 				this.gotoPage(request, response, "/list.jsp");
+				return;
 			} catch (DAOException e) {
 				e.printStackTrace();
 				request.setAttribute("messagae", "内部エラーが発生しました。");
@@ -46,6 +47,7 @@ public class ItemServlet extends HttpServlet {
 		} else if (action.equals("regist")) {
 			// 新規登録の場合
 			this.gotoPage(request, response, "/addItem.jsp");
+			return;
 		} else if (action.equals("add")) {
 			try {
 				// リクエストパラメータを取得
@@ -59,6 +61,42 @@ public class ItemServlet extends HttpServlet {
 				List<ItemBean> list = dao.findAll();
 				request.setAttribute("items", list);
 				this.gotoPage(request, response, "/list.jsp");
+				return;
+			} catch (DAOException e) {
+				e.printStackTrace();
+				request.setAttribute("messagae", "内部エラーが発生しました。");
+				this.gotoPage(request, response, "/error.jsp");
+			}
+		} else if (action.equals("edit")) {
+			try {
+				// リクエストパラメータを取得
+				int code = Integer.parseInt(request.getParameter("code"));
+				// 更新対象の商品を取得
+				ItemDAO dao = new ItemDAO();
+				ItemBean bean = dao.findByCode(code);
+				// リクエストスコープに更新対象の商品を登録
+				request.setAttribute("item", bean);
+				this.gotoPage(request, response, "/updateItem.jsp");
+				return;
+			} catch (DAOException e) {
+				e.printStackTrace();
+				request.setAttribute("messagae", "内部エラーが発生しました。");
+				this.gotoPage(request, response, "/error.jsp");
+			}
+			
+		} else if (action.equals("update")) {
+			try {
+				// リクエストパラメータを取得
+				int code = Integer.parseInt(request.getParameter("code"));
+				int categoryCode = Integer.parseInt(request.getParameter("categoryCode"));
+				String name = request.getParameter("name");
+				int price = Integer.parseInt(request.getParameter("price"));
+				// 更新の実行
+				ItemDAO dao = new ItemDAO();
+				dao.update(code, categoryCode, name, price);
+				// 商品一覧の表示：リダイレクトによる画面遷移
+				response.sendRedirect("/itemsystem/ItemServlet");
+				return;
 			} catch (DAOException e) {
 				e.printStackTrace();
 				request.setAttribute("messagae", "内部エラーが発生しました。");

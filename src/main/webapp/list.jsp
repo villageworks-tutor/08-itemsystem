@@ -15,6 +15,7 @@
 			<th>カテゴリーコード</th>
 			<th>商品名</th>
 			<th>価格</th>
+			<th>更新</th>
 		</tr>
 		<c:forEach items="${items}" var="item">
 		<tr>
@@ -22,6 +23,13 @@
 			<td>${item.categoryCode}</td>
 			<td>${item.name}</td>
 			<td>${item.price} 円</td>
+			<td>
+				<form action="/itemsystem/ItemServlet" method="get">
+					<input type="hidden" name="action" value="edit" />
+					<input type="hidden" name="code" value="${item.code}" />
+					<input type="submit" value="更新" />
+				</form>
+			</td>
 		</tr>
 		</c:forEach>
 	</table>
