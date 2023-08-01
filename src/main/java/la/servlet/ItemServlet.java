@@ -102,6 +102,21 @@ public class ItemServlet extends HttpServlet {
 				request.setAttribute("messagae", "内部エラーが発生しました。");
 				this.gotoPage(request, response, "/error.jsp");
 			}
+		} else if (action.equals("delete")) {
+			// リクエストパラメータを取得
+			int code = Integer.parseInt(request.getParameter("code"));
+			try {
+				// 削除の実行
+				ItemDAO dao = new ItemDAO();
+				dao.delete(code);
+				// 商品一覧の表示：リダイレクトによる画面遷移
+				response.sendRedirect("/itemsystem/ItemServlet");
+				return;
+			} catch (DAOException e) {
+				e.printStackTrace();
+				request.setAttribute("messagae", "内部エラーが発生しました。");
+				this.gotoPage(request, response, "/error.jsp");
+			}
 		}
 	}
 
