@@ -166,4 +166,26 @@ public class ItemDAO {
 		}
 	}
 
+	/**
+	 * 指定された商品番号の商品を削除する
+	 * @param code 削除対象商品の商品番号
+	 * @throws DAOException
+	 */
+	public void delete(int code) throws DAOException {
+		// 実行するSQLの設定
+		String sql = "DELETE FROM item WHERE code = ?";
+		try (// SQL実行オブジェクトを取得
+			 PreparedStatement pstmt = this.conn.prepareStatement(sql);) {
+			// プレースホルダにデータをバインド
+			pstmt.setInt(1, code);
+			// SQLの実行
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("レコードの削除に失敗しました。");
+		}
+		
+	}
+
 }

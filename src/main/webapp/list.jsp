@@ -16,6 +16,7 @@
 			<th>商品名</th>
 			<th>価格</th>
 			<th>更新</th>
+			<th>削除</th>
 		</tr>
 		<c:forEach items="${items}" var="item">
 		<tr>
@@ -28,6 +29,13 @@
 					<input type="hidden" name="action" value="edit" />
 					<input type="hidden" name="code" value="${item.code}" />
 					<input type="submit" value="更新" />
+				</form>
+			</td>
+			<td>
+				<form action="/itemsystem/ItemServlet" method="post">
+					<input type="hidden" name="action" value="delete" />
+					<input type="hidden" name="code" value="${item.code}" />
+					<input type="submit" value="削除" />
 				</form>
 			</td>
 		</tr>
