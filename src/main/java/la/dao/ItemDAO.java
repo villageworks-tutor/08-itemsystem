@@ -52,6 +52,7 @@ public class ItemDAO {
 	 * @throws DAOException
 	 */
 	public List<ItemBean> findAll() throws DAOException {
+		// 実行するSQLを設定
 		String sql = "SELECT * FROM item ORDER BY code";
 		try (// SQL実行オブジェクトを取得
 			 PreparedStatement pstmt = this.conn.prepareStatement(sql);
@@ -82,6 +83,37 @@ public class ItemDAO {
 	}
 
 	/**
+	 * 商品番号で商品を取得する
+	 * @param code 商品番号
+	 * @return ItemBean 商品のインスタンス
+	 * @throws DAOException
+	 */
+	public ItemBean findByCode(int code) throws DAOException {
+		// 実行するSQLを設定
+		String sql = "SELECT * FROM item WHERE code = ?";
+		try (// SQL実行オブジェクトを取得
+			 PreparedStatement pstmt = this.conn.prepareStatement(sql);) {
+			// プレースホルダにデータをバインド
+			pstmt.setInt(1, code);
+			try (// SQLの実行と結果セットの取得
+				 ResultSet rs = pstmt.executeQuery();) {
+				// 結果セットから商品のインスタンスを取得
+				ItemBean bean = new ItemBean();
+				if (rs.next()) {
+					bean.setCode(code);
+					bean.setCategoryCode(rs.getInt("category_code"));
+					bean.setName(rs.getString("name"));
+					bean.setPrice(rs.getInt("price"));
+				}
+				return bean;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("レコードの取得に失敗しました。");
+		}
+	}
+	
+	/**
 	 * 新規の商品を登録する
 	 * @param categoryCode カテゴリーコード
 	 * @param name         商品名
@@ -106,5 +138,32 @@ public class ItemDAO {
 		}
 		
 	}
-	
+
+	/**
+	 * 商品を更新する
+	 * @param code         商品番号
+	 * @param categoryCode カテゴリーコード
+	 * @param name         商品名
+	 * @param price        価格
+	 * @throws DAOException 
+	 */
+	public void update(int code, int categoryCode, String name, int price) throws DAOException {
+		// 実行するSQLを設定
+		String sql = "UPDATE item SET category_code = ?, name = ?, price = ? WHERE code = ?";
+		try (// SQL実行オブジェクトを取得
+			 PreparedStatement pstmt = this.conn.prepareStatement(sql);) {
+			// プレースホルダにデータをバインド
+			pstmt.setInt(1, categoryCode);
+			pstmt.setString(2, name);
+			pstmt.setInt(3, price);
+			pstmt.setInt(4, code);
+			// SQLを実行
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("レコードのっ更新に失敗しました。");
+		}
+	}
+
 }
