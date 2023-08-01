@@ -80,5 +80,31 @@ public class ItemDAO {
 		}
 		
 	}
+
+	/**
+	 * 新規の商品を登録する
+	 * @param categoryCode カテゴリーコード
+	 * @param name         商品名
+	 * @param price        価格
+	 * @throws DAOException
+	 */
+	public void add(int categoryCode, String name, int price) throws DAOException {
+		// 実行するSQLの設定
+		String sql = "INSERT INTO item (category_code, name, price) VALUES (?, ?, ?)";
+		try (// SQL実行オブジェクトを取得
+			 PreparedStatement pstmt = this.conn.prepareStatement(sql);) {
+			// プレースホルダにデータをバインド
+			pstmt.setInt(1, categoryCode);
+			pstmt.setString(2, name);
+			pstmt.setInt(3, price);
+			// SQLの実行
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("レコードの取得に失敗しました。");
+		}
+		
+	}
 	
 }

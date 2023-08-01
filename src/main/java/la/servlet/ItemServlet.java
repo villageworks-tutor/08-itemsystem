@@ -46,6 +46,24 @@ public class ItemServlet extends HttpServlet {
 		} else if (action.equals("regist")) {
 			// 新規登録の場合
 			this.gotoPage(request, response, "/addItem.jsp");
+		} else if (action.equals("add")) {
+			try {
+				// リクエストパラメータを取得
+				int categoryCode = Integer.parseInt(request.getParameter("categoryCode"));
+				String name = request.getParameter("name");
+				int price = Integer.parseInt(request.getParameter("price"));
+				// 新規登録の実行
+				ItemDAO dao = new ItemDAO();
+				dao.add(categoryCode, name, price);
+				// 商品一覧の表示：フォワードによる画面遷移
+				List<ItemBean> list = dao.findAll();
+				request.setAttribute("items", list);
+				this.gotoPage(request, response, "/list.jsp");
+			} catch (DAOException e) {
+				e.printStackTrace();
+				request.setAttribute("messagae", "内部エラーが発生しました。");
+				this.gotoPage(request, response, "/error.jsp");
+			}
 		}
 	}
 
