@@ -43,6 +43,9 @@ public class ItemServlet extends HttpServlet {
 				request.setAttribute("messagae", "内部エラーが発生しました。");
 				this.gotoPage(request, response, "/error.jsp");
 			}
+		} else if (action.equals("regist")) {
+			// 新規登録の場合
+			this.gotoPage(request, response, "/addItem.jsp");
 		}
 	}
 
